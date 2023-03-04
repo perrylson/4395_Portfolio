@@ -1,4 +1,4 @@
-#Script extract data from sites on a given subject, which in this case is the San Francisco Bay Area
+#Script extracts data from sites on a given subject, which in this case is the San Francisco Bay Area
 #Uses Beautiful Soup to perform web scraping
 #Performs preprocessing on text 
 #Calculates token popularity with tf-idf metric; score is used for finding top terms in the sites
@@ -88,7 +88,7 @@ def cleanText(site_amt):
         clean_data = re.sub('\n|\t|\[[^\]]*\]', '', data)
         sentences = sent_tokenize(clean_data)
 
-        with open(cleanFileName, "w") as file:
+        with open(cleanFileName, "w", encoding="utf-8") as file:
             for sent in sentences:
                 sent = " ".join(sent.split()) #Remove extra white spaces
                 #Check if sentence contains valid characters and ends in punctuation marks
@@ -113,7 +113,6 @@ def createTFDict(filtered_tokens):
     
     for key in tf_dict.keys():
         tf_dict[key] = tf_dict[key] / len(filtered_tokens)
-    
     return tf_dict
 
 #Create an inverse dependency dictionary with TF dictionaries and corpus
@@ -159,7 +158,7 @@ def createTermList(site_amt):
     #Create a corpus of tokens from the sites
     for i in range(site_amt):
         fileName = "clean_site_" + str(i+1) + ".txt"
-        with open(fileName, 'r') as f:
+        with open(fileName, 'r', encoding="utf-8") as f:
             doc = f.read()
             tokens = createTokens(doc)
             temp_dict = createTFDict(tokens)
@@ -195,7 +194,7 @@ def createTermList(site_amt):
 def createKnowledgeBase(knowledgeBase, site_amt):
     for i in range(site_amt):
         fileName = "clean_site_" + str(i+1) + ".txt"
-        with open(fileName, 'r') as f:
+        with open(fileName, 'r', encoding="utf-8") as f:
             lines = f.read().splitlines()
             for line in lines:
 
@@ -221,7 +220,7 @@ def main():
 
     #Load raw text files; clean them; and save them as cleaned files
     cleanText(site_amt)
-
+    
     #Perform tf-idf calculations and return a list of top terms
     termList = createTermList(site_amt)
 
