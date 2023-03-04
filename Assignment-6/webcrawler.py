@@ -106,7 +106,7 @@ def createTokens(doc):
 #Create a TF dictionary; term frequency is calculated by dividing token count by total amount of tokens
 #Entries are token: result from tf formula
 def createTFDict(filtered_tokens):
-    tf_dict = dict.fromkeys(set(filtered_tokens), 1)
+    tf_dict = dict.fromkeys(set(filtered_tokens), 0)
 
     for t in filtered_tokens:
         tf_dict[t] += 1
