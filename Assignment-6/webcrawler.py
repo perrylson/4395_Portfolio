@@ -116,7 +116,7 @@ def createTFDict(filtered_tokens):
     return tf_dict
 
 #Create an inverse dependency dictionary with TF dictionaries and corpus
-#Used for negatively penalizing words that occur in multiple documents
+#Used for penalizing words that occur in multiple documents
 #Entries are token: result from idf formula
 def createIDFDict(TFDictArr, vocab):
 
@@ -191,18 +191,28 @@ def createTermList(site_amt):
 
 #Populate a knowledge base dictionary with facts from the cleaned sites; save three facts for each term
 #Entries are term: array of string facts
-def createKnowledgeBase(knowledgeBase, site_amt):
-    for i in range(site_amt):
-        fileName = "clean_site_" + str(i+1) + ".txt"
-        with open(fileName, 'r', encoding="utf-8") as f:
-            lines = f.read().splitlines()
-            for line in lines:
+def createKnowledgeBase(knowledgeBase, site_amt, term_fact_amt):
+    for term in knowledgeBase:
+        fact_counter = 0
 
-                #Add fact to knowledge base if sentence contains term
-                for term in knowledgeBase:
+        for i in range(site_amt):
+            fileName = "clean_site_" + str(i+1) + ".txt"
+            with open(fileName, 'r', encoding="utf-8") as f:
+                lines = f.read().splitlines()
+                for line in lines:
+                    #Add fact to knowledge base if sentence contains term
                     if term in line:
-                        if len(knowledgeBase[term]) < 3:
-                            knowledgeBase[term].append(line)
+                        knowledgeBase[term].append(line)
+                        fact_counter += 1
+                    
+                    if fact_counter >= term_fact_amt:
+                        break
+                
+                if fact_counter >= term_fact_amt:
+                    break
+
+            if fact_counter >= term_fact_amt:
+                break
 
     return knowledgeBase
 
@@ -229,7 +239,7 @@ def main():
                       "Bay": [], "downtown": [], "shipyards": [], "data": [], "Alviso": []}
  
     #Find facts in the cleaned site files and saved them to the relevant keys
-    knowledgeBase = createKnowledgeBase(knowledgeBase, site_amt)
+    knowledgeBase = createKnowledgeBase(knowledgeBase, site_amt, 3)
 
     #Print knowledge base for the top ten terms
     print("\n\nKnowledge Base:\n\n")
