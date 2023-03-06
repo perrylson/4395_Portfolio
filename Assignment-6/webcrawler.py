@@ -2,7 +2,7 @@
 #Uses Beautiful Soup to perform web scraping
 #Performs preprocessing on text 
 #Calculates token popularity with tf-idf metric; score is used for finding top terms in the sites
-#Generate a knowledge base by iterating through sites and extracting facts for each term
+#Generates a knowledge base by iterating through sites and extracting facts for each term
 #Note: Must install nltk, bs4 via pip
 
 from nltk import word_tokenize
@@ -189,7 +189,7 @@ def createTermList(site_amt):
     return termList    
 
 
-#Populate a knowledge base dictionary with facts from the cleaned sites; save three facts for each term
+#Populate a knowledge base dictionary with facts from the cleaned sites; save N facts for each term
 #Entries are term: array of string facts
 def createKnowledgeBase(knowledgeBase, site_amt, term_fact_amt):
     for term in knowledgeBase:
@@ -207,9 +207,6 @@ def createKnowledgeBase(knowledgeBase, site_amt, term_fact_amt):
                     
                     if fact_counter >= term_fact_amt:
                         break
-                
-                if fact_counter >= term_fact_amt:
-                    break
 
             if fact_counter >= term_fact_amt:
                 break
@@ -221,6 +218,9 @@ def main():
     
     #Define the amount of URLS to extract
     site_amt = 15
+
+    #Define the number of facts per term
+    term_fact_amt = 3
 
     #Generate the list of links
     linkArr = webCrawl(starter_URL, site_amt)
@@ -239,13 +239,13 @@ def main():
                       "Bay": [], "downtown": [], "shipyards": [], "data": [], "Alviso": []}
  
     #Find facts in the cleaned site files and saved them to the relevant keys
-    knowledgeBase = createKnowledgeBase(knowledgeBase, site_amt, 3)
+    knowledgeBase = createKnowledgeBase(knowledgeBase, site_amt, term_fact_amt)
 
     #Print knowledge base for the top ten terms
     print("\n\nKnowledge Base:\n\n")
     
     for key, arr in list(knowledgeBase.items()):
-        print("Three Facts about " + key + ":" "\n")
+        print(str(term_fact_amt) + " Facts about " + key + ":" "\n")
         for fact in arr:
             print("- "+fact+"\n")
 
